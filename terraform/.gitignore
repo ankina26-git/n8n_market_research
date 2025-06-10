@@ -1,0 +1,8 @@
+# 環境変数ファイル
+.env
+
+# Terraform の機密情報を含む可能性のあるファイル
+terraform/*.tfvars # terraform ディレクトリ内の全ての .tfvars ファイルを除外
+terraform/.terraform/ # Terraform の状態ファイルなどが保存されるディレクトリ
+terraform/*.tfstate* # Terraform の状態ファイル
+terraform/crash.log

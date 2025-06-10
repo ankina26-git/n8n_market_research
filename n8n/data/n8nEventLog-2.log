@@ -1,0 +1,2 @@
+{"__type":"$$EventMessageAudit","id":"4a69af92-217b-4664-9660-61286c0f9ab5","ts":"2025-06-03T04:12:31.573+00:00","eventName":"n8n.audit.user.login.success","message":"n8n.audit.user.login.success","payload":{"userId":"68f645e3-9d50-48d1-9089-d23489add7f7","_email":"youichi2662@gmail.com","_firstName":"nogutsi","_lastName":"youichi","globalRole":"global:owner","authenticationMethod":"email"}}
+{"__type":"$$EventMessageConfirm","confirm":"4a69af92-217b-4664-9660-61286c0f9ab5","ts":"2025-06-03T04:12:31.634+00:00","source":{"id":"0","name":"eventBus"}}

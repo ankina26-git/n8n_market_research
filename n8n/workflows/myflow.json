@@ -1,0 +1,71 @@
+{
+	"nodes": [
+		{
+			"parameters": {
+				"triggerTimes": [
+					{
+						"mode": "everyDay",
+						"hour": 6,
+						"minute": 0
+					}
+				]
+			},
+			"name": "Cron Trigger",
+			"type": "n8n-nodes-base.cron",
+			"typeVersion": 1,
+			"position": [100, 300]
+		},	
+		{
+			"parameters": {
+				"authentication": "oAuth2",
+				"propertyId": "UA-XXXXXX-Y",
+				"viewId": "ga:XXXXXXX",
+				"metrics": ["ga:sessions", "ga:users"],
+				"dimensions": ["ga:date"]
+			},
+			"name": "Google Analytics",
+			"type": "n8n-nodes-base.googleAnalytics",
+			"typeVersion": 1,
+			"position": [300, 200],
+			"credentials": {
+			"googleAnalyticsOAuth2Api": {
+				"id": "creds_google_analytics",
+				"name": "Google Analytics OAuth2"
+			}
+			}
+		},
+		{
+			"parameters": {
+				"siteUrl": "https://example.com",
+				"startDate": "={{$now.subtract(1, 'day').format('YYYY-MM-DD')}}",
+				"endDate": "={{$now.format('YYYY-MM-DD')}}"
+			},
+			"name": "Google Search Console",
+			"type": "n8n-nodes-base.googleSearchConsole",
+			"typeVersion": 1,
+			"position": [300, 400],
+			"credentials": {
+				"googleSearchConsoleOAuth2Api": {
+					"id": "creds_search_console",
+					"name": "Google Search Console OAuth2"
+				}
+			}
+		},
+		{
+			"parameters": {
+				"model": "gemini-2.0-flash",
+				"prompt": "以下のデータを要約してSEO改善案を出してください: {{$json}}"
+			},
+			"name": "LLM Gemini Flash",
+			"type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+			"typeVersion": 1,
+			"position": [600, 300],
+			"credentials": {
+				"googlePalmApi": {
+					"id": "creds_gemini",
+					"name": "Gemini API Credential"
+				}
+			}
+		}
+	]
+}
