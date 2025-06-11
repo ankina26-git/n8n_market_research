@@ -12,34 +12,35 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func FiberConfig() fiber.Config {
+	return fiber.Config{
+		AppName: "Fiber Production App",
+		Prefork: false, // Dockerで安定稼働
+	}
+}
+
 func main() {
 	port := os.Getenv("APP_PORT")
 	if port == "" {
 		port = "3000"
 	}
 
-	// Fiberインスタンス作成（Preforkモード有効でもOK）
-	app := fiber.New(config.FiberConfig())
+	app := fiber.New(FiberConfig())
 
-	// Prefork時はこのif文で "Master" プロセスだけが初期化処理を行う
-	if fiber.IsChild() {
-		log.Println("👶 Child process detected → skipping DB init and route setup")
-	} else {
-		// マスタープロセスでのみ初期化
-		config.PostgresDB()
-		user_v1.RegisterRoutes(app.Group("/api/v1/user"))
-	}
+	config.PostgresDB()
+	config.DB.AutoMigrate(&user_v1.User{})
+	user_v1.RegisterRoutes(app.Group("/api/v1/user"))
 
-	// 1回だけListen（非同期でなくてもOK）
-	log.Printf("🚀 Starting server on port %s", port)
-	if err := app.Listen(":" + port); err != nil {
-		log.Fatalf("❌ Failed to start server: %v", err)
-	}
+	log.Printf("🚀 Starting Fiber on port %s", port)
+	go func() {
+		if err := app.Listen(":" + port); err != nil {
+			log.Fatalf("❌ Failed to start server: %v", err)
+		}
+	}()
 
-	// グレースフルシャットダウン（Fiberが内包している場合 Prefork では動作保証されないこともある）
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 	<-signalChan
-	log.Println("🛑 Shutting down gracefully...")
+	log.Println("🛑 Gracefully shutting down...")
 	_ = app.Shutdown()
 }
