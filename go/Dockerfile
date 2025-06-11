@@ -1,14 +1,15 @@
-FROM golang:1.21-alpine
+# Dockerfile
+FROM golang:1.23-alpine
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
 
-COPY . ./
+COPY . .
 
-RUN go build -o main .
+RUN go build -ldflags="-s -w" -o main ./cmd
 
 EXPOSE 3000
 

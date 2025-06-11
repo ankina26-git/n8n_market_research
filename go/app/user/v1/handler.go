@@ -1,7 +1,27 @@
 package v1
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"n8n_project_go/config"
 
-func Hello(c *fiber.Ctx) error {
-	return c.SendString("Hello from /")
+	"github.com/gofiber/fiber/v2"
+)
+
+func GetUsers(c *fiber.Ctx) error {
+	var users []User
+	result := config.DB.Find(&users)
+	if result.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to fetch users"})
+	}
+	return c.JSON(users)
+}
+
+func CreateUser(c *fiber.Ctx) error {
+	var user User
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
+	}
+	if err := config.DB.Create(&user).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to create user"})
+	}
+	return c.Status(201).JSON(user)
 }
