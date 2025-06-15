@@ -1,12 +1,16 @@
 package config
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"time"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func FiberConfig() fiber.Config {
 	return fiber.Config{
-		AppName:      "Fiber Production App",
-		Prefork:      true,                    // マルチコア対応（リバースプロキシ時）
-		ReadTimeout:  10 * 1000 * 1000 * 1000, // 10秒
-		WriteTimeout: 10 * 1000 * 1000 * 1000,
+		AppName:      "Fiber Production App", //
+		Prefork:      true,                   // マルチプロセスモード（CPUコア数に応じたプロセス分岐）
+		ReadTimeout:  10 * time.Second,       // リクエストの読み取りタイムアウト 10秒
+		WriteTimeout: 10 * time.Second,       // レスポンスの書き込みタイムアウト 10秒
 	}
 }

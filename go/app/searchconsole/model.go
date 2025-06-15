@@ -1,4 +1,4 @@
-package Analytics
+package searchconsole
 
 import "gorm.io/gorm"
 
